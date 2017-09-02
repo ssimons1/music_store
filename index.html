@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="https://unpkg.com/react@15.3.1/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.1/dist/react-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Heroic Features - Start Bootstrap Template</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/heroic-features.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">Start Bootstrap</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+      <!-- Jumbotron Header -->
+      <header class="jumbotron my-4">
+        <h1 class="display-3">A Warm Welcome!</h1>
+        <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, ipsam, eligendi, in quo sunt possimus non incidunt odit vero aliquid similique quaerat nam nobis illo aspernatur vitae fugiat numquam repellat.</p>
+        <a href="#" class="btn btn-primary btn-lg">Call to action!</a>
+      </header>
+
+      <!-- Page Features -->
+      <div id="myDiv">
+      </div>
+
+<!--         <div class="col-lg-3 col-md-6 mb-4">
+          <div class="card">
+            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+            <div class="card-body">
+              <h4 class="card-title">Card title</h4>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque.</p>
+            </div>
+            <div class="card-footer">
+              <a href="#" class="btn btn-primary">Find Out More!</a>
+            </div>
+          </div>
+        </div> -->
+
+      <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/babel">
+
+
+      class App extends React.Component {
+        constructor(props){
+          super(props);
+          this.changeState=this.changeState.bind(this);
+
+          this.state = {
+            sortType: 0,
+          };
+        }
+
+          changeState(button){
+            button.preventDefault();
+            var target = button.target;
+            var id = target.id;
+            if (id == "A-Z") {
+              this.setState({sortType: 1});
+            }
+            else {
+              this.setState({sortType: 2});
+            }
+          };
+
+
+        render(){
+          var songList = this.props.songData;
+          let sortButton = this.state.sortType;
+          if (sortButton != 0){
+            songList.sort(function(a,b){
+              if (sortButton == 1) {
+                if (a.trackName<b.trackName) return -1;
+                if (a.trackName>b.trackName) return 1;
+                return 0;
+              }
+              else {
+                if (a.trackName<b.trackName) return 1;
+                if (a.trackName>b.trackName) return -1;
+                return 0;
+            
+              }  
+            });
+          }
+          
+          const sortedList = songList.map(function(tracks){
+            return <Song {...tracks}></Song>;
+          });
+
+          return (
+            <div className="container">
+              <div className="row text-center">
+                <div className="col-md-6">
+                  <SortingButton id="A-Z" function={this.changeState} text="Sort A-Z"></SortingButton>
+                </div>
+                <div className="col-md-6">
+                  <SortingButton id="Z-A" function={this.changeState} text="Sort Z-A"></SortingButton>
+                </div>
+              </div>
+              <div className="row text-center">
+                {sortedList}
+              </div>
+            </div>
+          );
+        }
+
+      }
+
+      class Song extends React.Component {
+        render(){
+          return(
+            <div className="col-lg-3 col-md-6 mb-4">
+              <div className="card ">
+                <img className="card-img-top" src={this.props.artworkUrl100} alt="Image"></img>
+                <div className="card-body">
+                  <h4 className="card-title">{this.props.trackName}</h4>
+                  <p className="card-price">{"Now for $"+this.props.trackPrice}</p>
+                  <p className="card-text">{this.props.artistName}</p>
+                </div>
+                <div className="card-footer">
+                  <a href={this.props.previewUrl} className="btn btn-primary">Listen Now</a>
+                </div>
+              </div>
+            </div>
+          );
+        }
+      } 
+
+      class SortingButton extends React.Component {
+        render() {
+          return(
+            <a href="#" id={this.props.id} className="btn btn-primary" onClick={this.props.function}>{this.props.text}</a>
+          );
+        }
+      }
+
+      const songList = {
+        songData: [{
+          "wrapperType": "track",
+          "kind": "song",
+          "artistId": 580391756,
+          "collectionId": 1207120422,
+          "trackId": 1207120448,
+          "artistName": "The Chainsmokers & Coldplay",
+          "collectionName": "Memories...Do Not Open",
+          "trackName": "Something Just Like This",
+          "collectionCensoredName": "Memories...Do Not Open",
+          "trackCensoredName": "Something Just Like This",
+          "collectionArtistName": "The Chainsmokers",
+          "artistViewUrl": "https://itunes.apple.com/us/artist/the-chainsmokers/id580391756?uo=4",
+          "collectionViewUrl": "https://itunes.apple.com/us/album/something-just-like-this/id1207120422?i=1207120448&uo=4",
+          "trackViewUrl": "https://itunes.apple.com/us/album/something-just-like-this/id1207120422?i=1207120448&uo=4",
+          "previewUrl": "https://audio-ssl.itunes.apple.com/apple-assets-us-std-000001/AudioPreview82/v4/5d/71/ef/5d71efb7-2c40-0490-f137-9b86372f8fd5/mzaf_7873689062499888403.plus.aac.p.m4a",
+          "artworkUrl30": "http://is2.mzstatic.com/image/thumb/Music111/v4/02/81/16/02811613-b75f-7223-cd91-63448af2ffde/source/30x30bb.jpg",
+          "artworkUrl60": "http://is2.mzstatic.com/image/thumb/Music111/v4/02/81/16/02811613-b75f-7223-cd91-63448af2ffde/source/60x60bb.jpg",
+          "artworkUrl100": "http://is2.mzstatic.com/image/thumb/Music111/v4/02/81/16/02811613-b75f-7223-cd91-63448af2ffde/source/100x100bb.jpg",
+          "collectionPrice": 9.99,
+          "trackPrice": 1.29,
+          "releaseDate": "2017-02-22T08:00:00Z",
+          "collectionExplicitness": "explicit",
+          "trackExplicitness": "notExplicit",
+          "discCount": 1,
+          "discNumber": 1,
+          "trackCount": 12,
+          "trackNumber": 5,
+          "trackTimeMillis": 247165,
+          "country": "USA",
+          "currency": "USD",
+          "primaryGenreName": "Dance",
+          "isStreamable": true
+        },
+        {
+          "wrapperType": "track",
+          "kind": "song",
+          "artistId": 471744,
+          "collectionId": 1053933969,
+          "trackId": 1053934844,
+          "artistName": "Coldplay",
+          "collectionName": "A Head Full of Dreams",
+          "trackName": "Hymn for the Weekend",
+          "collectionCensoredName": "A Head Full of Dreams",
+          "trackCensoredName": "Hymn for the Weekend",
+          "artistViewUrl": "https://itunes.apple.com/us/artist/coldplay/id471744?uo=4",
+          "collectionViewUrl": "https://itunes.apple.com/us/album/hymn-for-the-weekend/id1053933969?i=1053934844&uo=4",
+          "trackViewUrl": "https://itunes.apple.com/us/album/hymn-for-the-weekend/id1053933969?i=1053934844&uo=4",
+          "previewUrl": "http://a1495.phobos.apple.com/us/r30/Music69/v4/6a/76/d1/6a76d10b-965f-dbbd-2ef1-b7db312a09e4/mzaf_6073198344394750772.plus.aac.p.m4a",
+          "artworkUrl30": "http://is4.mzstatic.com/image/thumb/Music62/v4/b8/5d/ff/b85dff39-32cd-34eb-7b0e-f087707bf254/source/30x30bb.jpg",
+          "artworkUrl60": "http://is4.mzstatic.com/image/thumb/Music62/v4/b8/5d/ff/b85dff39-32cd-34eb-7b0e-f087707bf254/source/60x60bb.jpg",
+          "artworkUrl100": "http://is4.mzstatic.com/image/thumb/Music62/v4/b8/5d/ff/b85dff39-32cd-34eb-7b0e-f087707bf254/source/100x100bb.jpg",
+          "collectionPrice": 9.99,
+          "trackPrice": 1.29,
+          "releaseDate": "2015-12-04T08:00:00Z",
+          "collectionExplicitness": "notExplicit",
+          "trackExplicitness": "notExplicit",
+          "discCount": 1,
+          "discNumber": 1,
+          "trackCount": 11,
+          "trackNumber": 3,
+          "trackTimeMillis": 258827,
+          "country": "USA",
+          "currency": "USD",
+          "primaryGenreName": "Alternative",
+          "isStreamable": true
+        },
+        {
+          "wrapperType": "track",
+          "kind": "song",
+          "artistId": 471744,
+          "collectionId": 829909653,
+          "trackId": 829910927,
+          "artistName": "Coldplay",
+          "collectionName": "Ghost Stories",
+          "trackName": "A Sky Full of Stars",
+          "collectionCensoredName": "Ghost Stories",
+          "trackCensoredName": "A Sky Full of Stars",
+          "artistViewUrl": "https://itunes.apple.com/us/artist/coldplay/id471744?uo=4",
+          "collectionViewUrl": "https://itunes.apple.com/us/album/a-sky-full-of-stars/id829909653?i=829910927&uo=4",
+          "trackViewUrl": "https://itunes.apple.com/us/album/a-sky-full-of-stars/id829909653?i=829910927&uo=4",
+          "previewUrl": "http://a205.phobos.apple.com/us/r30/Music/v4/28/39/fc/2839fce4-d1d2-6f05-1454-14d6a8d20097/mzaf_541644405070642904.plus.aac.p.m4a",
+          "artworkUrl30": "http://is3.mzstatic.com/image/thumb/Music/v4/56/4d/74/564d74d2-3564-886f-1af3-ea754413391c/source/30x30bb.jpg",
+          "artworkUrl60": "http://is3.mzstatic.com/image/thumb/Music/v4/56/4d/74/564d74d2-3564-886f-1af3-ea754413391c/source/60x60bb.jpg",
+          "artworkUrl100": "http://is3.mzstatic.com/image/thumb/Music/v4/56/4d/74/564d74d2-3564-886f-1af3-ea754413391c/source/100x100bb.jpg",
+          "collectionPrice": 9.99,
+          "trackPrice": 1.29,
+          "releaseDate": "2014-05-02T07:00:00Z",
+          "collectionExplicitness": "notExplicit",
+          "trackExplicitness": "notExplicit",
+          "discCount": 1,
+          "discNumber": 1,
+          "trackCount": 9,
+          "trackNumber": 8,
+          "trackTimeMillis": 268466,
+          "country": "USA",
+          "currency": "USD",
+          "primaryGenreName": "Alternative",
+          "isStreamable": true
+        },
+        {
+          "wrapperType": "track",
+          "kind": "song",
+          "artistId": 471744,
+          "collectionId": 1122775993,
+          "trackId": 1122776156,
+          "artistName": "Coldplay",
+          "collectionName": "A Rush of Blood to the Head",
+          "trackName": "Clocks",
+          "collectionCensoredName": "A Rush of Blood to the Head",
+          "trackCensoredName": "Clocks",
+          "artistViewUrl": "https://itunes.apple.com/us/artist/coldplay/id471744?uo=4",
+          "collectionViewUrl": "https://itunes.apple.com/us/album/clocks/id1122775993?i=1122776156&uo=4",
+          "trackViewUrl": "https://itunes.apple.com/us/album/clocks/id1122775993?i=1122776156&uo=4",
+          "previewUrl": "https://audio-ssl.itunes.apple.com/apple-assets-us-std-000001/AudioPreview60/v4/f6/c8/05/f6c805cf-35cc-b06d-7a1e-34f19e8d28ad/mzaf_668126730326503521.plus.aac.p.m4a",
+          "artworkUrl30": "http://is1.mzstatic.com/image/thumb/Music30/v4/e6/b5/33/e6b53333-3577-9cd5-1785-904f73feeeec/source/30x30bb.jpg",
+          "artworkUrl60": "http://is1.mzstatic.com/image/thumb/Music30/v4/e6/b5/33/e6b53333-3577-9cd5-1785-904f73feeeec/source/60x60bb.jpg",
+          "artworkUrl100": "http://is1.mzstatic.com/image/thumb/Music30/v4/e6/b5/33/e6b53333-3577-9cd5-1785-904f73feeeec/source/100x100bb.jpg",
+          "collectionPrice": 9.99,
+          "trackPrice": 1.29,
+          "releaseDate": "2002-08-26T07:00:00Z",
+          "collectionExplicitness": "notExplicit",
+          "trackExplicitness": "notExplicit",
+          "discCount": 1,
+          "discNumber": 1,
+          "trackCount": 11,
+          "trackNumber": 5,
+          "trackTimeMillis": 306906,
+          "country": "USA",
+          "currency": "USD",
+          "primaryGenreName": "Rock",
+          "isStreamable": true
+        },
+        {
+          "wrapperType": "track",
+          "kind": "song",
+          "artistId": 471744,
+          "collectionId": 1053933969,
+          "trackId": 1053934846,
+          "artistName": "Coldplay",
+          "collectionName": "A Head Full of Dreams",
+          "trackName": "Adventure of a Lifetime",
+          "collectionCensoredName": "A Head Full of Dreams",
+          "trackCensoredName": "Adventure of a Lifetime",
+          "artistViewUrl": "https://itunes.apple.com/us/artist/coldplay/id471744?uo=4",
+          "collectionViewUrl": "https://itunes.apple.com/us/album/adventure-of-a-lifetime/id1053933969?i=1053934846&uo=4",
+          "trackViewUrl": "https://itunes.apple.com/us/album/adventure-of-a-lifetime/id1053933969?i=1053934846&uo=4",
+          "previewUrl": "http://a1915.phobos.apple.com/us/r30/Music69/v4/88/8e/4e/888e4e6b-6114-8b50-665e-49d0e50f052a/mzaf_9153472814267479343.plus.aac.p.m4a",
+          "artworkUrl30": "http://is4.mzstatic.com/image/thumb/Music62/v4/b8/5d/ff/b85dff39-32cd-34eb-7b0e-f087707bf254/source/30x30bb.jpg",
+          "artworkUrl60": "http://is4.mzstatic.com/image/thumb/Music62/v4/b8/5d/ff/b85dff39-32cd-34eb-7b0e-f087707bf254/source/60x60bb.jpg",
+          "artworkUrl100": "http://is4.mzstatic.com/image/thumb/Music62/v4/b8/5d/ff/b85dff39-32cd-34eb-7b0e-f087707bf254/source/100x100bb.jpg",
+          "collectionPrice": 9.99,
+          "trackPrice": 1.29,
+          "releaseDate": "2015-11-06T08:00:00Z",
+          "collectionExplicitness": "notExplicit",
+          "trackExplicitness": "notExplicit",
+          "discCount": 1,
+          "discNumber": 1,
+          "trackCount": 11,
+          "trackNumber": 5,
+          "trackTimeMillis": 263787,
+          "country": "USA",
+          "currency": "USD",
+          "primaryGenreName": "Alternative",
+          "isStreamable": true
+        },
+        {
+          "wrapperType": "track",
+          "kind": "song",
+          "artistId": 471744,
+          "collectionId": 726372830,
+          "trackId": 726373148,
+          "artistName": "Coldplay",
+          "collectionName": "Mylo Xyloto",
+          "trackName": "Paradise",
+          "collectionCensoredName": "Mylo Xyloto",
+          "trackCensoredName": "Paradise",
+          "artistViewUrl": "https://itunes.apple.com/us/artist/coldplay/id471744?uo=4",
+          "collectionViewUrl": "https://itunes.apple.com/us/album/paradise/id726372830?i=726373148&uo=4",
+          "trackViewUrl": "https://itunes.apple.com/us/album/paradise/id726372830?i=726373148&uo=4",
+          "previewUrl": "https://audio-ssl.itunes.apple.com/apple-assets-us-std-000001/AudioPreview118/v4/5a/73/54/5a73544e-3466-4029-a75a-8e801d13a2e8/mzaf_4175447496906096360.plus.aac.p.m4a",
+          "artworkUrl30": "http://is3.mzstatic.com/image/thumb/Music4/v4/0d/bc/ea/0dbceab6-0aea-08a4-36d2-81a2618e85cd/source/30x30bb.jpg",
+          "artworkUrl60": "http://is3.mzstatic.com/image/thumb/Music4/v4/0d/bc/ea/0dbceab6-0aea-08a4-36d2-81a2618e85cd/source/60x60bb.jpg",
+          "artworkUrl100": "http://is3.mzstatic.com/image/thumb/Music4/v4/0d/bc/ea/0dbceab6-0aea-08a4-36d2-81a2618e85cd/source/100x100bb.jpg",
+          "collectionPrice": 9.99,
+          "trackPrice": 1.29,
+          "releaseDate": "2011-10-24T07:00:00Z",
+          "collectionExplicitness": "notExplicit",
+          "trackExplicitness": "notExplicit",
+          "discCount": 1,
+          "discNumber": 1,
+          "trackCount": 14,
+          "trackNumber": 3,
+          "trackTimeMillis": 277610,
+          "country": "USA",
+          "currency": "USD",
+          "primaryGenreName": "Alternative",
+          "isStreamable": true
+        },
+        {
+          "wrapperType": "track",
+          "kind": "song",
+          "artistId": 471744,
+          "collectionId": 1122775993,
+          "trackId": 1122776155,
+          "artistName": "Coldplay",
+          "collectionName": "A Rush of Blood to the Head",
+          "trackName": "The Scientist",
+          "collectionCensoredName": "A Rush of Blood to the Head",
+          "trackCensoredName": "The Scientist",
+          "artistViewUrl": "https://itunes.apple.com/us/artist/coldplay/id471744?uo=4",
+          "collectionViewUrl": "https://itunes.apple.com/us/album/the-scientist/id1122775993?i=1122776155&uo=4",
+          "trackViewUrl": "https://itunes.apple.com/us/album/the-scientist/id1122775993?i=1122776155&uo=4",
+          "previewUrl": "https://audio-ssl.itunes.apple.com/apple-assets-us-std-000001/AudioPreview30/v4/20/55/ec/2055ec3d-3b16-0294-0ed9-00f9ac004f6b/mzaf_381666690563393715.plus.aac.p.m4a",
+          "artworkUrl30": "http://is1.mzstatic.com/image/thumb/Music30/v4/e6/b5/33/e6b53333-3577-9cd5-1785-904f73feeeec/source/30x30bb.jpg",
+          "artworkUrl60": "http://is1.mzstatic.com/image/thumb/Music30/v4/e6/b5/33/e6b53333-3577-9cd5-1785-904f73feeeec/source/60x60bb.jpg",
+          "artworkUrl100": "http://is1.mzstatic.com/image/thumb/Music30/v4/e6/b5/33/e6b53333-3577-9cd5-1785-904f73feeeec/source/100x100bb.jpg",
+          "collectionPrice": 9.99,
+          "trackPrice": 1.29,
+          "releaseDate": "2002-08-26T07:00:00Z",
+          "collectionExplicitness": "notExplicit",
+          "trackExplicitness": "notExplicit",
+          "discCount": 1,
+          "discNumber": 1,
+          "trackCount": 11,
+          "trackNumber": 4,
+          "trackTimeMillis": 308930,
+          "country": "USA",
+          "currency": "USD",
+          "primaryGenreName": "Alternative",
+          "isStreamable": true
+        },
+        {
+          "wrapperType": "track",
+          "kind": "song",
+          "artistId": 471744,
+          "collectionId": 1123076757,
+          "trackId": 1123076826,
+          "artistName": "Coldplay",
+          "collectionName": "X & Y",
+          "trackName": "Fix You",
+          "collectionCensoredName": "X & Y",
+          "trackCensoredName": "Fix You",
+          "artistViewUrl": "https://itunes.apple.com/us/artist/coldplay/id471744?uo=4",
+          "collectionViewUrl": "https://itunes.apple.com/us/album/fix-you/id1123076757?i=1123076826&uo=4",
+          "trackViewUrl": "https://itunes.apple.com/us/album/fix-you/id1123076757?i=1123076826&uo=4",
+          "previewUrl": "https://audio-ssl.itunes.apple.com/apple-assets-us-std-000001/AudioPreview20/v4/07/f4/78/07f47852-b71a-40ae-d3aa-427561710ca3/mzaf_5716286701808045526.plus.aac.p.m4a",
+          "artworkUrl30": "http://is3.mzstatic.com/image/thumb/Music18/v4/44/0f/6f/440f6f25-7f35-131f-1f79-648fd53a51f2/source/30x30bb.jpg",
+          "artworkUrl60": "http://is3.mzstatic.com/image/thumb/Music18/v4/44/0f/6f/440f6f25-7f35-131f-1f79-648fd53a51f2/source/60x60bb.jpg",
+          "artworkUrl100": "http://is3.mzstatic.com/image/thumb/Music18/v4/44/0f/6f/440f6f25-7f35-131f-1f79-648fd53a51f2/source/100x100bb.jpg",
+          "collectionPrice": 9.99,
+          "trackPrice": 1.29,
+          "releaseDate": "2005-06-07T07:00:00Z",
+          "collectionExplicitness": "notExplicit",
+          "trackExplicitness": "notExplicit",
+          "discCount": 1,
+          "discNumber": 1,
+          "trackCount": 13,
+          "trackNumber": 4,
+          "trackTimeMillis": 294992,
+          "country": "USA",
+          "currency": "USD",
+          "primaryGenreName": "Alternative",
+          "isStreamable": true
+    }
+  ]
+}
+      
+      ReactDOM.render(
+        <App songData={songList.songData} />,
+        document.getElementById('myDiv')
+      );
+    </script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/popper/popper.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+
+</html>

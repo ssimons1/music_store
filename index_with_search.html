@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="https://unpkg.com/react@15.3.1/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.1/dist/react-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Heroic Features - Start Bootstrap Template</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/heroic-features.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">Start Bootstrap</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+      <!-- Jumbotron Header -->
+      <header class="jumbotron my-4">
+        <h1 class="display-3">A Warm Welcome!</h1>
+        <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, ipsam, eligendi, in quo sunt possimus non incidunt odit vero aliquid similique quaerat nam nobis illo aspernatur vitae fugiat numquam repellat.</p>
+        <a href="#" class="btn btn-primary btn-lg">Call to action!</a>
+      </header>
+
+      <!-- Page Features -->
+      <div id="myDiv">
+      </div>
+
+<!--         <div class="col-lg-3 col-md-6 mb-4">
+          <div class="card">
+            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+            <div class="card-body">
+              <h4 class="card-title">Card title</h4>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque.</p>
+            </div>
+            <div class="card-footer">
+              <a href="#" class="btn btn-primary">Find Out More!</a>
+            </div>
+          </div>
+        </div> -->
+
+      <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/babel">
+
+
+      class App extends React.Component {
+        constructor(props){
+          super(props);
+          this.changeState=this.changeState.bind(this);
+          this.handleSubmit=this.handleSubmit.bind(this);
+          this.handleChange=this.handleChange.bind(this);
+          this.getAJAX=this.getAJAX.bind(this);
+
+          this.state = {
+            sortType: 0,
+            songs: [],
+            value: "",
+            artist: ""
+          };
+        }
+
+        componentDidMount(){
+          this.getAJAX(this.props.defaultBand);
+        }
+
+
+          handleChange(event) {
+            event.preventDefault();
+            const target = event.target;
+            const value = target.value;
+
+            this.setState({value: value});
+          }
+
+          handleSubmit(event) {
+            event.preventDefault();
+            var value = this.state.value
+            this.getAJAX(value);
+          }
+
+          getAJAX(name){
+            const url = "https://itunes.apple.com/search?term="+name+"&limit=8&entity=song"
+            $.ajax({
+              url: url,
+              dataType: 'json',
+              cache: false,
+              success: function(data){
+                this.setState({songs: data.results,
+                               artist: data.results[0].artistName});
+              }.bind(this),
+              error: function(error){
+                alert(error);
+              }.bind(this)
+            });
+          }
+
+          changeState(button){
+            button.preventDefault();
+            var target = button.target;
+            var id = target.id;
+            if (id == "A-Z") {
+              this.setState({sortType: 1});
+            }
+            else {
+              this.setState({sortType: 2});
+            }
+          };
+
+
+        render(){
+          var songList = this.state.songs;
+          let sortButton = this.state.sortType;
+          if (sortButton != 0){
+            songList.sort(function(a,b){
+              if (sortButton == 1) {
+                if (a.trackName<b.trackName) return -1;
+                if (a.trackName>b.trackName) return 1;
+                return 0;
+              }
+              else {
+                if (a.trackName<b.trackName) return 1;
+                if (a.trackName>b.trackName) return -1;
+                return 0;
+            
+              }  
+            });
+          }
+          
+          const sortedList = songList.map(function(tracks){
+            return <Song {...tracks}></Song>;
+          });
+
+          return (
+            <div className="container">
+              <div className="row text-center">
+                <form className="search_form" onSubmit={this.handleSubmit}>
+                  <input type="text" name="search_info" className="form-control" placeholder="Search..."
+                  onChange={this.handleChange} value={this.state.value} />
+                  <input type="submit" className="btn btn-primary" value="Submit" />
+                </form>
+              </div>
+
+              <div className="row text-center">
+                <Title artist={this.state.artist}></Title>
+              </div>
+              
+              <div className="row text-center">
+                <div className="col-md-6">
+                  <SortingButton id="A-Z" function={this.changeState} text="Sort A-Z"></SortingButton>
+                </div>
+                <div className="col-md-6">
+                  <SortingButton id="Z-A" function={this.changeState} text="Sort Z-A"></SortingButton>
+                </div>
+              </div>
+              <div className="row text-center">
+                {sortedList}
+              </div>
+            </div>
+          );
+        }
+
+      }
+
+      class Title extends React.Component {
+        render() {
+          return(
+            <h2 className="title">{"Showing songs by "+this.props.artist}</h2>
+          );
+        }
+      }
+
+      class Song extends React.Component {
+        render(){
+          return(
+            <div className="col-lg-3 col-md-6 mb-4">
+              <div className="card">
+                <img className="card-img-top" src={this.props.artworkUrl100} alt="Image"></img>
+                <div className="card-body">
+                  <h4 className="card-title">{this.props.trackName}</h4>
+                  <p className="card-price">{"Now for $"+this.props.trackPrice}</p>
+                  <p className="card-text">{this.props.artistName}</p>
+                </div>
+                <div className="card-footer">
+                  <a href={this.props.previewUrl} className="btn btn-primary">Listen Now</a>
+                </div>
+              </div>
+            </div>
+          );
+        }
+      } 
+
+      class SortingButton extends React.Component {
+        render() {
+          return(
+            <a href="#" id={this.props.id} className="btn btn-primary" onClick={this.props.function}>{this.props.text}</a>
+          );
+        }
+      }
+          $(document).ready(function() {
+            $.ajax({
+              url: "https://itunes.apple.com/search?term=<coldplay>&limit=8&entity=song",
+              dataType: 'json',
+              cache: false,
+              success: function(data){
+                this.setState({songs: data.results,
+                              artist: data.results[0].artistName});
+              }.bind(this),
+              error: function(error){
+                alert(error);
+              }.bind(this)
+            });
+          });
+      
+      ReactDOM.render(
+        <App defaultBand="madonna" />,
+        document.getElementById('myDiv')
+      );
+    </script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/popper/popper.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+
+</html>
